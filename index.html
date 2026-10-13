@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Court of Sorry — Kashyap & Khushi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
@@ -10,225 +10,430 @@
 <style>
 :root {
   box-sizing: border-box;
-  --bg: #fff3cf;
+  --bg: #fff6e8;
+  --bg-grad: radial-gradient(circle at 50% 20%, #fffdf7 0%, #ffedf2 100%);
   --ink: #2b2140;
   --card: #ffffff;
-  --pink: #ff5d8f;
-  --teal: #19b5a5;
+  --pink: #ff4d80;
+  --pink-light: #ffe5ed;
+  --teal: #10b981;
+  --teal-light: #e6f9f3;
+  --yellow: #ffd166;
   --line: #2b2140;
+  --shadow: 3px 3px 0 var(--line);
+  --shadow-sm: 2px 2px 0 var(--line);
+  --shadow-active: 1px 1px 0 var(--line);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #241a3a;
-    --ink: #fff3cf;
-    --card: #352754;
-    --line: #fff3cf;
+    --bg: #1c152e;
+    --bg-grad: radial-gradient(circle at 50% 20%, #261d3d 0%, #161024 100%);
+    --ink: #fff6e8;
+    --card: #2e224a;
+    --pink-light: #481e35;
+    --teal-light: #133d37;
+    --line: #fff6e8;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #241a3a;
-  --ink: #fff3cf;
-  --card: #352754;
-  --line: #fff3cf;
+  --bg: #1c152e;
+  --bg-grad: radial-gradient(circle at 50% 20%, #261d3d 0%, #161024 100%);
+  --ink: #fff6e8;
+  --card: #2e224a;
+  --pink-light: #481e35;
+  --teal-light: #133d37;
+  --line: #fff6e8;
 }
 
 *, *::before, *::after { box-sizing: inherit; }
 
-html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 
 body {
-  margin: 0;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--bg);
+  background-image: var(--bg-grad);
   color: var(--ink);
-  font: 600 17px/1.5 Nunito, system-ui, sans-serif;
+  font: 600 14px/1.35 Nunito, system-ui, sans-serif;
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  align-items: center;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* App Viewport Container */
 main {
   width: 100%;
-  max-width: 460px;
-  padding: 28px 20px 60px;
-  text-align: center;
+  max-width: 420px;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
+  text-align: center;
+  box-sizing: border-box;
 }
 
+/* Sound Toggle */
 .sound-toggle {
-  position: fixed;
-  top: 14px;
-  right: 14px;
+  position: absolute;
+  top: 10px;
+  right: 12px;
   z-index: 1000;
   background: var(--card);
   color: var(--ink);
-  border: 3px solid var(--line);
+  border: 2px solid var(--line);
   border-radius: 999px;
-  padding: 7px 14px;
-  font: 800 13px Nunito, sans-serif;
+  padding: 4px 10px;
+  font: 800 11.5px Nunito, sans-serif;
   cursor: pointer;
-  box-shadow: 3px 3px 0 var(--line);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: transform .1s, box-shadow .1s;
+  gap: 4px;
+  transition: transform .08s, box-shadow .08s;
+  touch-action: manipulation;
 }
 
 .sound-toggle:active {
-  transform: translate(2px, 2px);
+  transform: translate(1.5px, 1.5px);
   box-shadow: 1px 1px 0 var(--line);
 }
 
-.sound-toggle:focus-visible {
-  outline: 3px solid var(--pink);
-  outline-offset: 2px;
+/* Screen Transitions */
+.screen {
+  display: none;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
+.screen.on {
+  display: flex;
+  animation: popIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.25) both;
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Headings */
 h1 {
-  font: 400 34px/1.1 "Bowlby One", Impact, sans-serif;
-  margin: 6px 0 12px;
+  font: 400 clamp(22px, 4.6vh, 27px)/1.1 "Bowlby One", Impact, sans-serif;
+  margin: 2px 0 4px;
   transform: rotate(-1.5deg);
+  letter-spacing: -0.5px;
 }
 
 h2 {
-  font: 400 22px/1.2 "Bowlby One", Impact, sans-serif;
-  margin: 0 0 12px;
+  font: 400 clamp(17px, 3.5vh, 20px)/1.15 "Bowlby One", Impact, sans-serif;
+  margin: 2px 0 4px;
 }
 
 .big {
-  font-size: 76px;
-  line-height: 1.2;
+  font-size: clamp(34px, 5.8vh, 44px);
+  line-height: 1.1;
   display: inline-block;
+  margin-bottom: 2px;
 }
 
-.screen { display: none; }
-.screen.on { display: block; }
+.pill-badge {
+  display: inline-block;
+  background: var(--pink-light);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
 
+/* Card */
 .card {
   background: var(--card);
-  border: 3px solid var(--line);
-  border-radius: 18px;
-  padding: 16px;
-  margin: 14px 0;
-  box-shadow: 5px 5px 0 var(--line);
+  border: 2.5px solid var(--line);
+  border-radius: 14px;
+  padding: 9px 12px;
+  margin: 5px 0;
+  box-shadow: var(--shadow);
   text-align: left;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+.card p {
+  margin: 3px 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.role-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12.5px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px dashed var(--line);
+}
+
+.charges-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  padding-top: 5px;
+}
+
+.charge-item {
+  line-height: 1.3;
+}
+
+/* Buttons */
 button {
-  font: 800 16px Nunito, sans-serif;
+  font: 800 13.5px Nunito, sans-serif;
   color: var(--ink);
   background: var(--card);
-  border: 3px solid var(--line);
-  border-radius: 14px;
-  padding: 11px 16px;
-  margin: 6px;
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 14px;
+  margin: 4px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 var(--line);
-  transition: transform .1s, box-shadow .1s;
+  box-shadow: var(--shadow);
+  transition: transform .08s, box-shadow .08s;
+  touch-action: manipulation;
 }
 
 button:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 var(--line);
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-active);
 }
 
 button:focus-visible {
   outline: 3px solid var(--pink);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 button.go { background: var(--pink); color: #fff; }
 button.ok { background: var(--teal); color: #fff; }
 
-.arena {
-  position: relative;
-  height: 90px;
-  margin: 10px 0;
+.btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  margin: 4px 0;
 }
 
-.arena button { position: absolute; top: 8px; }
-#guilty { left: 5%; }
-#nope { right: 5%; transition: left .18s, top .18s, right .18s; }
+.btn-row button {
+  flex: 1;
+  margin: 0;
+  padding: 9px 8px;
+  font-size: 13px;
+}
 
-.say { min-height: 56px; margin: 8px 0; font-style: italic; }
+.sm-btn {
+  font-size: 11.5px;
+  padding: 5px 12px;
+  border-radius: 10px;
+  margin: 3px 0 0;
+  opacity: 0.9;
+}
 
+/* Dodging Arena */
+.arena {
+  position: relative;
+  height: 64px;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.arena button {
+  position: absolute;
+  top: 6px;
+  padding: 8px 16px;
+  margin: 0;
+}
+
+#guilty { left: 4%; }
+#nope { right: 4%; transition: left .16s, top .16s, right .16s; }
+
+.say {
+  min-height: 34px;
+  margin: 3px 0;
+  font-style: italic;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+}
+
+/* Meter */
 .meter {
-  height: 30px;
-  border: 3px solid var(--line);
-  border-radius: 16px;
+  height: 22px;
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
   overflow: hidden;
   background: var(--card);
-  margin: 16px 0;
+  margin: 8px 0;
+  width: 100%;
 }
 
 .meter i {
   display: block;
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, var(--teal), #ffd23f, var(--pink));
+  background: linear-gradient(90deg, var(--teal), var(--yellow), var(--pink));
   transition: width 2.4s cubic-bezier(.2, 1.6, .4, 1);
 }
 
-.shake { animation: shake .5s; }
+.shake { animation: shake .45s; }
 
 @keyframes shake {
   0%, 100% { transform: none; }
-  20% { transform: translate(-9px, 4px) rotate(-1deg); }
-  40% { transform: translate(9px, -4px) rotate(1deg); }
-  60% { transform: translate(-6px, 2px); }
-  80% { transform: translate(6px, -2px); }
+  20% { transform: translate(-7px, 3px) rotate(-1deg); }
+  40% { transform: translate(7px, -3px) rotate(1deg); }
+  60% { transform: translate(-5px, 2px); }
+  80% { transform: translate(5px, -2px); }
 }
 
-.gavel {
-  display: inline-block;
-  font-size: 80px;
+/* Gavel & Verdict */
+.verdict-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.verdict-header .gavel {
+  font-size: 32px;
   animation: bang .7s .2s both;
   transform-origin: 80% 80%;
+  margin: 0;
+}
+
+.verdict-header h1 {
+  margin: 0;
 }
 
 @keyframes bang {
-  0% { transform: rotate(-50deg) translateY(-30px); }
+  0% { transform: rotate(-50deg) translateY(-20px); }
   60% { transform: rotate(25deg); }
   100% { transform: rotate(0); }
 }
 
 .cert {
-  border: 4px double var(--line);
-  border-radius: 10px;
-  padding: 18px 14px;
+  border: 2.5px double var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
   text-align: center;
   background: var(--card);
-  margin: 14px 0;
+  margin: 4px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+  line-height: 1.3;
+  max-height: 48vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cert h2 {
+  font-size: 14px;
+  margin: 1px 0 2px;
+}
+
+.cert hr {
+  border: 0;
+  border-top: 1.5px dashed var(--line);
+  margin: 4px 0;
+  opacity: 0.5;
+}
+
+.cert p {
+  margin: 2px 0;
+}
+
+.cert-quote {
+  background: var(--pink-light);
+  border-left: 3px solid var(--pink);
+  padding: 4px 7px;
+  border-radius: 6px;
+  margin: 3px 0;
+  font-style: italic;
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.badge-sentence {
+  display: inline-block;
+  background: var(--teal-light);
+  border: 1.5px solid var(--line);
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--ink);
+  margin: 2px 0;
+  line-height: 1.25;
 }
 
 .sig {
-  font: italic 700 26px Georgia, serif;
+  font: italic 700 18px Georgia, serif;
   color: var(--pink);
+  margin: 2px 0;
 }
 
-.bit {
-  position: fixed;
-  top: -30px;
-  font-size: 26px;
-  animation: fall 3.2s linear forwards;
-  pointer-events: none;
-}
-
-@keyframes fall {
-  to { transform: translateY(112vh) rotate(360deg); }
+/* Punishment Grid */
+.picks-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  margin: 5px 0;
 }
 
 .pick {
   display: block;
   width: 100%;
   text-align: left;
-  margin: 10px 0;
+  margin: 0;
+  padding: 7px 9px;
+  font-size: 12.5px;
+  line-height: 1.25;
+  border-radius: 11px;
 }
 
-.small { font-size: 14px; opacity: .85; }
+.small { font-size: 11.5px; opacity: .85; margin: 3px 0; }
+
+.bit {
+  position: fixed;
+  top: -30px;
+  font-size: 24px;
+  animation: fall 3.2s linear forwards;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+@keyframes fall {
+  to { transform: translateY(112vh) rotate(360deg); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -248,30 +453,30 @@ button.ok { background: var(--teal); color: #fff; }
 
 <main id="app">
 
-  <!-- WELCOME -->
+  <!-- SCREEN 0: WELCOME -->
   <section class="screen on" id="s0">
     <div class="big">⚖️💗</div>
     <h1>COURT OF SORRY</h1>
 
-    <p><b>Case No. 420</b><br>
-    Kashyap vs. Khushi's Angry Mood 🥺</p>
+    <span class="pill-badge">Case No. 420 • Kashyap vs Khushi 🥺</span>
 
     <div class="card">
-      <p>👑 <b>Presiding Judge:</b><br>Honourable Madam Khushi 💅</p>
-      <p>🤦🏻‍♂️ <b>Accused:</b><br>One Idiot Named Kashyap ❤️</p>
-      <p>😭 <b>Lawyer for the Accused:</b><br>
-      Nobody. He knows he messed up.</p>
+      <div class="role-grid">
+        <div>👑 <b>Presiding Judge:</b> Madam Khushi 💅</div>
+        <div>🤦🏻‍♂️ <b>Accused:</b> One Idiot Named Kashyap ❤️</div>
+        <div>😭 <b>Defense:</b> None (He knows he messed up)</div>
+      </div>
+      <div class="charges-summary">
+        <div class="charge-item">🥺 Made Khushi upset & misses her smile</div>
+        <div class="charge-item">🤦🏻‍♂️ Idiot who messed up but never wanted to hurt her</div>
+        <div class="charge-item">🌸 Requesting one chance to see her cutest smile</div>
+      </div>
     </div>
-
-    <p><b>Charges against the accused:</b></p>
-    <p>🥺 Making Khushi upset & realizing how precious her smile is<br>
-    🤦🏻‍♂️ Being an idiot who messed up but never wanted to hurt her<br>
-    🌸 Requesting one chance to see her cutest smile again</p>
 
     <button class="go" onclick="startCourt()">Enter the courtroom ⚖️</button>
   </section>
 
-  <!-- THREE CHARGES -->
+  <!-- SCREEN 1: THREE CHARGES -->
   <section class="screen" id="s1">
     <div class="big">👩🏻‍⚖️</div>
     <h2 id="ch">Charge 1 of 3</h2>
@@ -285,11 +490,11 @@ button.ok { background: var(--teal); color: #fff; }
     <p class="say" id="sy">How does the court find the accused?</p>
   </section>
 
-  <!-- LIE DETECTOR -->
+  <!-- SCREEN 2: LIE DETECTOR -->
   <section class="screen" id="s2">
     <div class="big">🕵️💗</div>
     <h2>Lie Detector Test</h2>
-    <p>Question: <i>"Is the accused actually sorry?"</i></p>
+    <p style="margin: 2px 0 4px; font-size: 13.5px;">Question: <i>"Is the accused actually sorry?"</i></p>
 
     <div class="meter"><i id="mt"></i></div>
     <p class="say" id="ld">Press the button. The machine is nervous.</p>
@@ -300,76 +505,66 @@ button.ok { background: var(--teal); color: #fff; }
     </button>
   </section>
 
-  <!-- PUNISHMENT -->
+  <!-- SCREEN 3: PUNISHMENT -->
   <section class="screen" id="s3">
     <div class="big">🔨</div>
     <h2>Choose His Punishment 😈</h2>
-    <p>The Honourable Judge Khushi's decision is final. 👑</p>
+    <p style="margin: 2px 0; font-size: 12.5px;">The Honourable Judge Khushi's decision is final. 👑</p>
 
-    <button class="pick" onclick="pun(0)">🥟 Unlimited favorite food . He pays. He watches</button>
-    <button class="pick" onclick="pun(1)">🦷 You can bite me harder. I accept my fate, Madam! 🤦🏻‍♂️❤️</button>
-    <button class="pick" onclick="pun(2)">👑 Whatever you want to do. Your wish is my command, Khushi Madam! 💗</button>
-    <button class="pick" onclick="pun(3)">🫂 One tight hug whenever you want. No excuses allowed! 🥹❤️</button>
+    <div class="picks-grid">
+      <button class="pick" onclick="pun(0)">🥟 Unlimited favorite food . He pays. He watches</button>
+      <button class="pick" onclick="pun(1)">🦷 You can bite me harder. I accept my fate, Madam! 🤦🏻‍♂️❤️</button>
+      <button class="pick" onclick="pun(2)">👑 Whatever you want to do. Your wish is my command, Khushi Madam! 💗</button>
+      <button class="pick" onclick="pun(3)">🫂 One tight hug whenever you want. No excuses allowed! 🥹❤️</button>
+    </div>
 
     <p class="small">Choose wisely, Your Honour. 😂💗</p>
   </section>
 
-  <!-- FINAL VERDICT -->
+  <!-- SCREEN 4: FINAL VERDICT -->
   <section class="screen" id="s4">
-    <div class="gavel">🔨</div>
-    <div class="big">⚖️💗</div>
-    <h1>FINAL VERDICT</h1>
-
-    <p class="say">The court has reached its verdict...</p>
+    <div class="verdict-header">
+      <span class="gavel">🔨</span>
+      <h1>FINAL VERDICT</h1>
+      <span class="big" style="font-size: 26px;">⚖️💗</span>
+    </div>
 
     <div class="cert">
       <h2>📜 OFFICIAL COURT VERDICT</h2>
-
-      <p><b>Case No. 420</b></p>
-      <p>Kashyap vs. Khushi's Angry Mood 🥺</p>
-
+      <p style="font-size: 11px; opacity: 0.85;">Case No. 420 • Kashyap vs. Khushi's Angry Mood 🥺</p>
       <hr>
 
       <p><b>THE ACCUSED IS FOUND GUILTY OF:</b></p>
       <p>Being an idiot who hurt someone very special. 🤦🏻‍♂️💔</p>
 
-      <p><b>Sentence:</b></p>
-      <p id="sen"></p>
+      <p style="margin-top: 4px;"><b>Sentence:</b></p>
+      <div id="sen" class="badge-sentence"></div>
 
-      <p><b>THE ACCUSED'S FINAL STATEMENT:</b></p>
-
-      <p>
+      <p style="margin-top: 4px;"><b>THE ACCUSED'S FINAL STATEMENT:</b></p>
+      <div class="cert-quote">
         "Your Honour, I have no excuses. I just want to say sorry
-        from the bottom of my heart. 🥹❤️ I can't force you to forgive
-        me, but I genuinely hope one day you will. Your smile is way
+        from the bottom of my heart. 🥹❤️ Your smile is way
         more important to me than winning this case. 🫶🏻🌸"
-      </p>
+      </div>
 
       <hr>
 
       <p><b>FINAL ORDER:</b></p>
-      <p>
-        The accused must try to make Khushi smile again and never
-        take her feelings lightly. 💗
-      </p>
+      <p>The accused must make Khushi smile again and never take her feelings lightly. 💗</p>
 
-      <p class="sig">— Kashyap ❤️</p>
+      <div class="sig">— Kashyap ❤️</div>
 
-      <p><b>Court is now in session…</b> 👩🏻‍⚖️🔨</p>
-      <p>
-        Khushi Madam, will you grant this idiot one chance to appeal? 🥺👉🏻👈🏻❤️
-      </p>
-
-      <p class="small">
-        No pressure, Your Honour. Your feelings and your decision matter. 🌸
-      </p>
+      <p style="font-size: 11px;">Khushi Madam, will you grant this idiot one chance to appeal? 🥺👉🏻👈🏻❤️</p>
     </div>
 
-    <button class="go" onclick="forgive()">Grant one chance 💗</button>
-    <button onclick="notYet()">Not yet, Your Idiot 😤</button>
+    <div class="btn-row">
+      <button class="go" onclick="forgive()">Grant one chance 💗</button>
+      <button onclick="notYet()">Not yet 😤</button>
+    </div>
+
     <p class="say" id="reply"></p>
 
-    <button onclick="restart()">Replay the trial 🔁</button>
+    <button class="sm-btn" onclick="restart()">Replay the trial 🔁</button>
   </section>
 
 </main>
@@ -410,7 +605,6 @@ class SoundEngine {
     const playStrike = (delay = 0) => {
       const t = this.ctx.currentTime + delay;
 
-      // Heavy wooden punch thud
       const osc = this.ctx.createOscillator();
       const oscGain = this.ctx.createGain();
       osc.type = 'sine';
@@ -425,7 +619,6 @@ class SoundEngine {
       osc.start(t);
       osc.stop(t + 0.23);
 
-      // Wooden crack noise impact
       const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -449,7 +642,6 @@ class SoundEngine {
       noiseGain.connect(this.ctx.destination);
       noise.start(t);
 
-      // Wooden body resonance
       const resOsc = this.ctx.createOscillator();
       const resGain = this.ctx.createGain();
       resOsc.type = 'triangle';
@@ -468,7 +660,7 @@ class SoundEngine {
     }
   }
 
-  // 2. Playful Dodge Boing (when "Not guilty" dodges away)
+  // 2. Playful Dodge Boing
   boing() {
     if (!this.enabled) return;
     this.init();
@@ -525,13 +717,13 @@ class SoundEngine {
     return interval;
   }
 
-  // 4. Lie Detector 1000% Sorry Victory Chime
+  // 4. Lie Detector Victory Chime
   lieSuccess() {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
 
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, idx) => {
       const t = this.ctx.currentTime + (idx * 0.09);
       const osc = this.ctx.createOscillator();
@@ -575,7 +767,7 @@ class SoundEngine {
     });
   }
 
-  // 6. Forgive harp / romantic magical chime
+  // 6. Forgive harp / romantic magic chime
   forgive() {
     if (!this.enabled) return;
     this.init();
@@ -671,7 +863,6 @@ function go(n) {
   window.scrollTo(0, 0);
 
   if (n === 4) {
-    // Synchronize double gavel bang with gavel hitting the podium
     setTimeout(() => {
       sound.gavel(true);
     }, 280);
@@ -715,8 +906,8 @@ function show() {
 
   const n = $("nope");
   n.style.left = "";
-  n.style.right = "5%";
-  n.style.top = "8px";
+  n.style.right = "4%";
+  n.style.top = "6px";
 }
 
 function guilty() {
@@ -770,7 +961,7 @@ function lie() {
       "RESULT: 1000% SORRY! The machine confirms that Kashyap means it. 💗🥹";
 
     $("app").classList.add("shake");
-    setTimeout(() => $("app").classList.remove("shake"), 600);
+    setTimeout(() => $("app").classList.remove("shake"), 500);
 
     $("ln").style.display = "inline-block";
   }, 2500);
@@ -793,29 +984,29 @@ function pun(i) {
 function confetti() {
   const set = ["🎉", "💖", "✨", "🎊", "🥳", "🌸", "❤️"];
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 26; i++) {
     const d = document.createElement("div");
     d.className = "bit";
     d.textContent = set[i % set.length];
-    d.style.left = Math.random() * 95 + "%";
-    d.style.animationDelay = Math.random() * 1.5 + "s";
+    d.style.left = Math.random() * 92 + "%";
+    d.style.animationDelay = Math.random() * 1.4 + "s";
 
     document.body.appendChild(d);
-    setTimeout(() => d.remove(), 5200);
+    setTimeout(() => d.remove(), 4200);
   }
 }
 
 function forgive() {
   sound.forgive();
   $("reply").textContent =
-    "APPEAL ACCEPTED! 🥹💗 Kashyap promises to be more careful with Khushi's feelings. Thank you for giving him a chance, Your Honour! 🌸❤️";
+    "APPEAL ACCEPTED! 🥹💗 Kashyap promises to cherish Khushi's smile forever! 🌸❤️";
   confetti();
 }
 
 function notYet() {
   sound.notYet();
   $("reply").textContent =
-    "The court respects your decision, Khushi Madam. ❤️ No pressure, no excuses. Kashyap is truly sorry and will give you the time you need. 🌸";
+    "Court respects your decision, Khushi Madam. ❤️ Kashyap is truly sorry and will wait for you. 🌸";
 }
 
 function restart() {
