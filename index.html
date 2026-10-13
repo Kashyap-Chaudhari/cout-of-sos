@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Court of Sorry — Kashyap & Khushi</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  box-sizing: border-box;
+  --bg: #fff3cf;
+  --ink: #2b2140;
+  --card: #ffffff;
+  --pink: #ff5d8f;
+  --teal: #19b5a5;
+  --line: #2b2140;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #241a3a;
+    --ink: #fff3cf;
+    --card: #352754;
+    --line: #fff3cf;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #241a3a;
+  --ink: #fff3cf;
+  --card: #352754;
+  --line: #fff3cf;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+body {
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bg);
+  color: var(--ink);
+  font: 600 17px/1.5 Nunito, system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+main {
+  width: 100%;
+  max-width: 460px;
+  padding: 28px 20px 60px;
+  text-align: center;
+  position: relative;
+}
+
+.sound-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1000;
+  background: var(--card);
+  color: var(--ink);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: 800 13px Nunito, sans-serif;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--line);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform .1s, box-shadow .1s;
+}
+
+.sound-toggle:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--line);
+}
+
+.sound-toggle:focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 2px;
+}
+
+h1 {
+  font: 400 34px/1.1 "Bowlby One", Impact, sans-serif;
+  margin: 6px 0 12px;
+  transform: rotate(-1.5deg);
+}
+
+h2 {
+  font: 400 22px/1.2 "Bowlby One", Impact, sans-serif;
+  margin: 0 0 12px;
+}
+
+.big {
+  font-size: 76px;
+  line-height: 1.2;
+  display: inline-block;
+}
+
+.screen { display: none; }
+.screen.on { display: block; }
+
+.card {
+  background: var(--card);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 14px 0;
+  box-shadow: 5px 5px 0 var(--line);
+  text-align: left;
+}
+
+button {
+  font: 800 16px Nunito, sans-serif;
+  color: var(--ink);
+  background: var(--card);
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  padding: 11px 16px;
+  margin: 6px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--line);
+  transition: transform .1s, box-shadow .1s;
+}
+
+button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--line);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 3px;
+}
+
+button.go { background: var(--pink); color: #fff; }
+button.ok { background: var(--teal); color: #fff; }
+
+.arena {
+  position: relative;
+  height: 90px;
+  margin: 10px 0;
+}
+
+.arena button { position: absolute; top: 8px; }
+#guilty { left: 5%; }
+#nope { right: 5%; transition: left .18s, top .18s, right .18s; }
+
+.say { min-height: 56px; margin: 8px 0; font-style: italic; }
+
+.meter {
+  height: 30px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card);
+  margin: 16px 0;
+}
+
+.meter i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--teal), #ffd23f, var(--pink));
+  transition: width 2.4s cubic-bezier(.2, 1.6, .4, 1);
+}
+
+.shake { animation: shake .5s; }
+
+@keyframes shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-9px, 4px) rotate(-1deg); }
+  40% { transform: translate(9px, -4px) rotate(1deg); }
+  60% { transform: translate(-6px, 2px); }
+  80% { transform: translate(6px, -2px); }
+}
+
+.gavel {
+  display: inline-block;
+  font-size: 80px;
+  animation: bang .7s .2s both;
+  transform-origin: 80% 80%;
+}
+
+@keyframes bang {
+  0% { transform: rotate(-50deg) translateY(-30px); }
+  60% { transform: rotate(25deg); }
+  100% { transform: rotate(0); }
+}
+
+.cert {
+  border: 4px double var(--line);
+  border-radius: 10px;
+  padding: 18px 14px;
+  text-align: center;
+  background: var(--card);
+  margin: 14px 0;
+}
+
+.sig {
+  font: italic 700 26px Georgia, serif;
+  color: var(--pink);
+}
+
+.bit {
+  position: fixed;
+  top: -30px;
+  font-size: 26px;
+  animation: fall 3.2s linear forwards;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  to { transform: translateY(112vh) rotate(360deg); }
+}
+
+.pick {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
+}
+
+.small { font-size: 14px; opacity: .85; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sound Toggle -->
+<button class="sound-toggle" id="soundBtn" onclick="toggleSound()" aria-label="Toggle audio effects">
+  <span id="soundIcon">🔊</span> <span id="soundLabel">Sound ON</span>
+</button>
+
+<main id="app">
+
+  <!-- WELCOME -->
+  <section class="screen on" id="s0">
+    <div class="big">⚖️💗</div>
+    <h1>COURT OF SORRY</h1>
+
+    <p><b>Case No. 420</b><br>
+    Kashyap vs. Khushi's Angry Mood 🥺</p>
+
+    <div class="card">
+      <p>👑 <b>Presiding Judge:</b><br>Honourable Madam Khushi 💅</p>
+      <p>🤦🏻‍♂️ <b>Accused:</b><br>One Idiot Named Kashyap ❤️</p>
+      <p>😭 <b>Lawyer for the Accused:</b><br>
+      Nobody. He knows he messed up.</p>
+    </div>
+
+    <p><b>Charges against the accused:</b></p>
+    <p>🥺 Making Khushi upset & realizing how precious her smile is<br>
+    🤦🏻‍♂️ Being an idiot who messed up but never wanted to hurt her<br>
+    🌸 Requesting one chance to see her cutest smile again</p>
+
+    <button class="go" onclick="startCourt()">Enter the courtroom ⚖️</button>
+  </section>
+
+  <!-- THREE CHARGES -->
+  <section class="screen" id="s1">
+    <div class="big">👩🏻‍⚖️</div>
+    <h2 id="ch">Charge 1 of 3</h2>
+    <div class="card" id="ct"></div>
+
+    <div class="arena">
+      <button class="ok" id="guilty" onclick="guilty()">GUILTY 🥺</button>
+      <button id="nope" onmouseenter="dodge()" ontouchstart="dodge(event)" onclick="dodge()">Not guilty 😇</button>
+    </div>
+
+    <p class="say" id="sy">How does the court find the accused?</p>
+  </section>
+
+  <!-- LIE DETECTOR -->
+  <section class="screen" id="s2">
+    <div class="big">🕵️💗</div>
+    <h2>Lie Detector Test</h2>
+    <p>Question: <i>"Is the accused actually sorry?"</i></p>
+
+    <div class="meter"><i id="mt"></i></div>
+    <p class="say" id="ld">Press the button. The machine is nervous.</p>
+
+    <button class="go" id="lb" onclick="lie()">Run the test ❤️</button>
+    <button id="ln" style="display:none" onclick="goToSentencing()" class="ok">
+      Go to sentencing ⚖️
+    </button>
+  </section>
+
+  <!-- PUNISHMENT -->
+  <section class="screen" id="s3">
+    <div class="big">🔨</div>
+    <h2>Choose His Punishment 😈</h2>
+    <p>The Honourable Judge Khushi's decision is final. 👑</p>
+
+    <button class="pick" onclick="pun(0)">🥟 Unlimited favorite food . He pays. He watches</button>
+    <button class="pick" onclick="pun(1)">🦷 You can bite me harder. I accept my fate, Madam! 🤦🏻‍♂️❤️</button>
+    <button class="pick" onclick="pun(2)">👑 Whatever you want to do. Your wish is my command, Khushi Madam! 💗</button>
+    <button class="pick" onclick="pun(3)">🫂 One tight hug whenever you want. No excuses allowed! 🥹❤️</button>
+
+    <p class="small">Choose wisely, Your Honour. 😂💗</p>
+  </section>
+
+  <!-- FINAL VERDICT -->
+  <section class="screen" id="s4">
+    <div class="gavel">🔨</div>
+    <div class="big">⚖️💗</div>
+    <h1>FINAL VERDICT</h1>
+
+    <p class="say">The court has reached its verdict...</p>
+
+    <div class="cert">
+      <h2>📜 OFFICIAL COURT VERDICT</h2>
+
+      <p><b>Case No. 420</b></p>
+      <p>Kashyap vs. Khushi's Angry Mood 🥺</p>
+
+      <hr>
+
+      <p><b>THE ACCUSED IS FOUND GUILTY OF:</b></p>
+      <p>Being an idiot who hurt someone very special. 🤦🏻‍♂️💔</p>
+
+      <p><b>Sentence:</b></p>
+      <p id="sen"></p>
+
+      <p><b>THE ACCUSED'S FINAL STATEMENT:</b></p>
+
+      <p>
+        "Your Honour, I have no excuses. I just want to say sorry
+        from the bottom of my heart. 🥹❤️ I can't force you to forgive
+        me, but I genuinely hope one day you will. Your smile is way
+        more important to me than winning this case. 🫶🏻🌸"
+      </p>
+
+      <hr>
+
+      <p><b>FINAL ORDER:</b></p>
+      <p>
+        The accused must try to make Khushi smile again and never
+        take her feelings lightly. 💗
+      </p>
+
+      <p class="sig">— Kashyap ❤️</p>
+
+      <p><b>Court is now in session…</b> 👩🏻‍⚖️🔨</p>
+      <p>
+        Khushi Madam, will you grant this idiot one chance to appeal? 🥺👉🏻👈🏻❤️
+      </p>
+
+      <p class="small">
+        No pressure, Your Honour. Your feelings and your decision matter. 🌸
+      </p>
+    </div>
+
+    <button class="go" onclick="forgive()">Grant one chance 💗</button>
+    <button onclick="notYet()">Not yet, Your Idiot 😤</button>
+    <p class="say" id="reply"></p>
+
+    <button onclick="restart()">Replay the trial 🔁</button>
+  </section>
+
+</main>
+
+<script>
+// ==========================================
+// WEB AUDIO SYNTHESIZER SOUND ENGINE
+// ==========================================
+class SoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    return this.enabled;
+  }
+
+  // 1. Realistic Courtroom Gavel Bang
+  gavel(double = false) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const playStrike = (delay = 0) => {
+      const t = this.ctx.currentTime + delay;
+
+      // Heavy wooden punch thud
+      const osc = this.ctx.createOscillator();
+      const oscGain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, t);
+      osc.frequency.exponentialRampToValueAtTime(40, t + 0.16);
+
+      oscGain.gain.setValueAtTime(0.85, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+      osc.connect(oscGain);
+      oscGain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.23);
+
+      // Wooden crack noise impact
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1400, t);
+      filter.Q.setValueAtTime(2.2, t);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.5, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start(t);
+
+      // Wooden body resonance
+      const resOsc = this.ctx.createOscillator();
+      const resGain = this.ctx.createGain();
+      resOsc.type = 'triangle';
+      resOsc.frequency.setValueAtTime(360, t);
+      resGain.gain.setValueAtTime(0.35, t);
+      resGain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      resOsc.connect(resGain);
+      resGain.connect(this.ctx.destination);
+      resOsc.start(t);
+      resOsc.stop(t + 0.19);
+    };
+
+    playStrike(0);
+    if (double) {
+      playStrike(0.24);
+    }
+  }
+
+  // 2. Playful Dodge Boing (when "Not guilty" dodges away)
+  boing() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(220, t);
+    osc.frequency.exponentialRampToValueAtTime(740, t + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(530, t + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(820, t + 0.28);
+
+    gain.gain.setValueAtTime(0.38, t);
+    gain.gain.linearRampToValueAtTime(0.3, t + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.33);
+  }
+
+  // 3. Lie Detector suspense pulse
+  startLieDetector() {
+    if (!this.enabled) return null;
+    this.init();
+    if (!this.ctx) return null;
+
+    let step = 0;
+    const interval = setInterval(() => {
+      if (!this.enabled || !this.ctx) return;
+      step++;
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = step % 2 === 0 ? 'sine' : 'triangle';
+      const baseFreq = 480 + Math.min(step * 38, 620);
+      osc.frequency.setValueAtTime(baseFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, t + 0.07);
+
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.09);
+    }, 150);
+
+    return interval;
+  }
+
+  // 4. Lie Detector 1000% Sorry Victory Chime
+  lieSuccess() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    notes.forEach((freq, idx) => {
+      const t = this.ctx.currentTime + (idx * 0.09);
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.35, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.6);
+    });
+  }
+
+  // 5. Celebration fanfare / confetti burst
+  celebrate() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const chord = [440, 554.37, 659.25, 880, 1108.73];
+    chord.forEach((freq, idx) => {
+      const t = this.ctx.currentTime + (idx * 0.08);
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.32, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.8);
+    });
+  }
+
+  // 6. Forgive harp / romantic magical chime
+  forgive() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const melody = [783.99, 987.77, 1174.66, 1567.98, 1479.98, 1567.98];
+    melody.forEach((freq, idx) => {
+      const t = this.ctx.currentTime + (idx * 0.12);
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.32, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.75);
+    });
+  }
+
+  // 7. Tender gentle chime for "Not yet"
+  notYet() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    [392.00, 493.88].forEach(freq => {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 1.25);
+    });
+  }
+
+  // 8. Cheerful button pop
+  pop() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(450, t);
+    osc.frequency.exponentialRampToValueAtTime(750, t + 0.06);
+
+    gain.gain.setValueAtTime(0.24, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.09);
+  }
+}
+
+const sound = new SoundEngine();
+
+function toggleSound() {
+  const on = sound.toggle();
+  $("soundIcon").textContent = on ? "🔊" : "🔇";
+  $("soundLabel").textContent = on ? "Sound ON" : "Muted";
+  if (on) sound.pop();
+}
+
+// ==========================================
+// COURTROOM LOGIC & FLOW
+// ==========================================
+const HER = "Khushi";
+const ME = "Kashyap";
+
+const $ = id => document.getElementById(id);
+
+function go(n) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $("s" + n).classList.add("on");
+  window.scrollTo(0, 0);
+
+  if (n === 4) {
+    // Synchronize double gavel bang with gavel hitting the podium
+    setTimeout(() => {
+      sound.gavel(true);
+    }, 280);
+  }
+}
+
+function startCourt() {
+  sound.pop();
+  go(1);
+}
+
+function goToSentencing() {
+  sound.pop();
+  go(3);
+}
+
+const charges = [
+  [
+    "Making Khushi upset and then realizing how precious her smile is. 🥺💗",
+    "GUILTY! 😭 The accused admits that Khushi's smile means more than winning this case. ❤️"
+  ],
+  [
+    "Being an idiot who sometimes messes up but never wants to hurt Khushi. 🤦🏻‍♂️❤️",
+    "GUILTY! 🥹 The accused promises to be more careful with Khushi's feelings. 💗"
+  ],
+  [
+    "Requesting one chance to turn Khushi’s anger into her cutest smile again. 🥹🌸",
+    "GUILTY! 💗 The accused sincerely hopes to see Khushi smile again, whenever she feels ready. 🫶🏻"
+  ]
+];
+
+let ci = 0;
+let di = 0;
+let lieTimer;
+let scanInterval;
+
+function show() {
+  $("ch").textContent = "Charge " + (ci + 1) + " of " + charges.length;
+  $("ct").textContent = charges[ci][0];
+  $("sy").textContent = "How does the court find the accused?";
+
+  const n = $("nope");
+  n.style.left = "";
+  n.style.right = "5%";
+  n.style.top = "8px";
+}
+
+function guilty() {
+  sound.gavel(false);
+  $("sy").textContent = charges[ci][1];
+  ci++;
+
+  setTimeout(() => {
+    if (ci < charges.length) {
+      show();
+    } else {
+      go(2);
+    }
+  }, 2200);
+}
+
+const dodges = [
+  "Objection overruled, Your Honour! 😂",
+  "The accused has no defence. Just say sorry! 🥺",
+  "Nice try, Kashyap. The truth cannot escape! 😏",
+  "Not guilty? Khushi Madam disagrees! 👑"
+];
+
+function dodge(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  sound.boing();
+
+  const n = $("nope");
+  const a = n.parentElement.getBoundingClientRect();
+
+  n.style.right = "auto";
+  n.style.left = Math.max(0, Math.random() * (a.width - n.offsetWidth)) + "px";
+  n.style.top = Math.max(0, Math.random() * (a.height - n.offsetHeight)) + "px";
+
+  $("sy").textContent = dodges[di++ % dodges.length];
+}
+
+function lie() {
+  sound.pop();
+  $("lb").style.display = "none";
+  $("ld").textContent = "Analysing apology levels... 🕵️";
+  $("mt").style.width = "100%";
+
+  scanInterval = sound.startLieDetector();
+
+  lieTimer = setTimeout(() => {
+    if (scanInterval) clearInterval(scanInterval);
+    sound.lieSuccess();
+
+    $("ld").textContent =
+      "RESULT: 1000% SORRY! The machine confirms that Kashyap means it. 💗🥹";
+
+    $("app").classList.add("shake");
+    setTimeout(() => $("app").classList.remove("shake"), 600);
+
+    $("ln").style.display = "inline-block";
+  }, 2500);
+}
+
+const sentences = [
+  "🥟 Unlimited favorite food . He pays. He watches 😂❤️",
+  "🦷 You can bite me harder. I accept my fate, Madam! 🤦🏻‍♂️❤️",
+  "👑 Whatever you want to do. Your wish is my command, Khushi Madam! 💗",
+  "🫂 One tight hug whenever you want. No excuses allowed! 🥹❤️"
+];
+
+function pun(i) {
+  $("sen").textContent = sentences[i];
+  sound.celebrate();
+  go(4);
+  confetti();
+}
+
+function confetti() {
+  const set = ["🎉", "💖", "✨", "🎊", "🥳", "🌸", "❤️"];
+
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement("div");
+    d.className = "bit";
+    d.textContent = set[i % set.length];
+    d.style.left = Math.random() * 95 + "%";
+    d.style.animationDelay = Math.random() * 1.5 + "s";
+
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 5200);
+  }
+}
+
+function forgive() {
+  sound.forgive();
+  $("reply").textContent =
+    "APPEAL ACCEPTED! 🥹💗 Kashyap promises to be more careful with Khushi's feelings. Thank you for giving him a chance, Your Honour! 🌸❤️";
+  confetti();
+}
+
+function notYet() {
+  sound.notYet();
+  $("reply").textContent =
+    "The court respects your decision, Khushi Madam. ❤️ No pressure, no excuses. Kashyap is truly sorry and will give you the time you need. 🌸";
+}
+
+function restart() {
+  clearTimeout(lieTimer);
+  if (scanInterval) clearInterval(scanInterval);
+  sound.pop();
+
+  ci = 0;
+  di = 0;
+
+  $("mt").style.width = "0";
+  $("lb").style.display = "";
+  $("ln").style.display = "none";
+  $("ld").textContent = "Press the button. The machine is nervous.";
+  $("reply").textContent = "";
+
+  show();
+  go(0);
+}
+
+show();
+</script>
+</body>
+</html>
